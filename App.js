@@ -8,24 +8,80 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, View, FlatList, Image} from 'react-native';
+import {Container, Content, Card, CardItem, Text, Header, Body, Left, Right, Button, Title, Icon} from 'native-base';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const data = require("./coffee.json")
+
+const IMG = {
+  image1: require('./images/one.jpg'),
+  image2: require('./images/two.jpg'),
+  image3: require('./images/three.jpg'),
+  image4: require('./images/four.jpg'),
+  image5: require('./images/five.jpg'),
+  image6: require('./images/six.jpg')
+}
+
+
 
 type Props = {};
 export default class App extends Component<Props> {
+
+  state = {cart:[]};
+
+  addToCart = (order) => {
+    console.log(order)
+    this.setState({cart: [...this.state.cart, order]}, ()=>{console.log(this.state.cart)})
+  };
+
+
+  _keyExtractor = (item, index) => item.name;
+
+
+_renderItem = ({item}) => {
+  return (
+    <Card>
+        <CardItem>
+          <Body>
+            <Image source={IMG[item.img]} style={{width:"100%", height: 200 }}/>
+          </Body>
+        </CardItem>
+
+        <CardItem>
+            <Left>
+              <Text>{item.name}</Text>
+            </Left>
+            <Right>
+              <Button onPress={()=>this.addToCart(item)}>
+                <Text>+ Cart</Text>
+              </Button>
+            </Right>
+        </CardItem>
+    </Card>
+  )
+};
+
   render() {
+    console.log(data.coffees);
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
+    <Container>
+      <Header>
+        <Right>
+          <Button transparent>
+            <Icon name="cart"/>
+            <Text>{this.state.cart.length}</Text>
+          </Button>
+        </Right>
+      </Header>
+
+    <Content padder>
+    <FlatList
+        data={data.coffees}
+        keyExtractor={this._keyExtractor}
+        renderItem={this._renderItem}
+      />
+    </Content>
+    </Container>
     );
   }
 }
@@ -35,16 +91,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+    backgroundColor: '#fffafa',
   },
 });
