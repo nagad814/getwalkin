@@ -50,17 +50,11 @@ export default class App extends Component<Props> {
     c = [...b]
 
     let result = c.map(x => x.price);
-
-    console.log(result)
-
     var total = result.reduce((x,y) => x+y, 0);
-
-    console.log(total)
     this.setState({cart:[...b], total})
   }
 
 
-  // this.setState({cart: [...this.state.cart, order]}, ()=>{console.log(this.state.cart)});
 
   openCart = ()=> this.setState(previousState => ({modalVisible:!previousState.modalVisible}));
 
