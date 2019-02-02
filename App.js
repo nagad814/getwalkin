@@ -58,7 +58,7 @@ export default class App extends Component<Props> {
 
   openCart = ()=> this.setState(previousState => ({modalVisible:!previousState.modalVisible}));
 
-  clearCart = ()=> this.setState({cart:[], modalVisible:false})
+  clearCart = ()=> this.setState({cart:[], modalVisible:false, total:0})
 
   _keyExtractor = (item, index) => item.name;
 
