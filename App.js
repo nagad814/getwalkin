@@ -11,26 +11,56 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, View, FlatList, Image} from 'react-native';
 import {Container, Content, Card, CardItem, Text, Header, Body, Left, Right, Button, Title, Icon} from 'native-base';
 import CartModal from './CartModal'
+import IMG from './IMG'
 
 const data = require("./coffee.json")
-
-const IMG = {
-  image1: require('./images/one.jpg'),
-  image2: require('./images/two.jpg'),
-  image3: require('./images/three.jpg'),
-  image4: require('./images/four.jpg'),
-  image5: require('./images/five.jpg'),
-  image6: require('./images/six.jpg')
-}
-
 
 
 type Props = {};
 export default class App extends Component<Props> {
 
-  state = {cart:[], modalVisible: false};
+  state = {cart:[], modalVisible: false, total:0};
 
-  addToCart = (order) =>  this.setState({cart: [...this.state.cart, order]}, ()=>{console.log(this.state.cart)});
+  addToCart = (order) =>  {
+
+    var a = [...this.state.cart, order];
+    var lastId;
+    var b = [];
+
+    a.sort(function (x, y) {
+          if (x['name'] < y['name']) {
+              return -1;
+          }
+          if (x['name'] > y['name']) {
+            return 1;
+          }
+          return 0;
+      });
+
+
+    for (var i = 0; i < a.length; i++) {
+        if (lastId == a[i]['name']) {
+            b[b.length-1]['price'] += a[i]['price'];
+        } else {
+            b[b.length] = (a[i]);
+            lastId = a[i]['name'];
+        }
+    }
+
+    c = [...b]
+
+    let result = c.map(x => x.price);
+
+    console.log(result)
+
+    var total = result.reduce((x,y) => x+y, 0);
+
+    console.log(total)
+    this.setState({cart:[...b], total})
+  }
+
+
+  // this.setState({cart: [...this.state.cart, order]}, ()=>{console.log(this.state.cart)});
 
   openCart = ()=> this.setState(previousState => ({modalVisible:!previousState.modalVisible}));
 
@@ -50,7 +80,7 @@ _renderItem = ({item}) => {
 
         <CardItem>
             <Left>
-              <Text>{item.name}</Text>
+              <Text>{item.name}  Rs:{item.price}</Text>
             </Left>
             <Right>
               <Button onPress={()=>this.addToCart(item)}>
@@ -84,7 +114,8 @@ _renderItem = ({item}) => {
     <CartModal modalVisible={this.state.modalVisible} 
         openCart={this.openCart} 
         clearCart={this.clearCart}
-        cart={this.state.cart}/>
+        cart={this.state.cart}
+        total={this.state.total}/>
     </Container>
     );
   }

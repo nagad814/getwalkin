@@ -9,22 +9,13 @@
 
 import React, { Component } from 'react';
 import {FlatList, Modal, Image, StyleSheet } from 'react-native';
-import {Container, Content, Card, CardItem, Text, Header, Body, Left, Right, Button, Title, Icon} from 'native-base';
+import {Container, Content, Card, CardItem, Text, Header, Body, Left, Right, Button, Title, Icon, Footer} from 'native-base';
+import IMG from './IMG'
 
-const IMG = {
-    image1: require('./images/one.jpg'),
-    image2: require('./images/two.jpg'),
-    image3: require('./images/three.jpg'),
-    image4: require('./images/four.jpg'),
-    image5: require('./images/five.jpg'),
-    image6: require('./images/six.jpg')
-  }
 
 export default class CartModal extends Component<Props> { 
 
     _keyExtractor = (item, index) => {
-        console.log(index);
-        console.log(item);
         return item.name;
     } 
 
@@ -36,17 +27,12 @@ export default class CartModal extends Component<Props> {
               <Left>
                 <Image source={IMG[item.img]} style={styles.image}/>
               </Left>
-            </CardItem>
-    
-            <CardItem>
-                <Left>
-                  <Text>{item.name}</Text>
-                </Left>
-                <Right>
-                  <Button onPress={()=>this.addToCart(item)}>
-                    <Text>+ Cart</Text>
-                  </Button>
-                </Right>
+              <Body style={{justifyContent:"center"}}>
+                <Text> {item.name} </Text>
+              </Body>
+              <Right>
+                <Text> Rs:{item.price} </Text>
+              </Right>
             </CardItem>
         </Card>
       )
@@ -55,7 +41,7 @@ export default class CartModal extends Component<Props> {
 
 
     render(){
-        console.log(this.props.cart);
+        let arr  = [...this.props.cart]
         return(
             <Modal animationType="slide"  visible={this.props.modalVisible} >
             <Container>
@@ -75,11 +61,19 @@ export default class CartModal extends Component<Props> {
                 <Content padder>
 
                 <FlatList 
-                    data={this.props.cart}
+                    data={arr}
                     keyExtractor={this._keyExtractor}
                     renderItem={this._renderItem}
                 />
-                
+
+                <Footer>
+                    <Left>
+                        <Title>  Total</Title>
+                    </Left>
+                    <Right>
+                    <Title>Rs:{this.props.total} </Title>
+                    </Right>
+                </Footer>                
                 </Content>
 
             </Container>
@@ -87,7 +81,6 @@ export default class CartModal extends Component<Props> {
             </Modal>
         )
     }
-
 
 }
 
@@ -99,6 +92,6 @@ const styles = StyleSheet.create({
       backgroundColor: '#fffafa',
     },
     image: {
-      width:"30%", height: 50 
+      width:"80%", height: 100 
     }
   });
